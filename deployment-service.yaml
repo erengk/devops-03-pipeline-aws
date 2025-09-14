@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: devops-application
-          image: mimaraslan/devops-application:latest
+          image: gokhaneren/devops-application:latest
           resources:
             limits:
               memory: "128Mi"

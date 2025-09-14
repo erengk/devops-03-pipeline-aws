@@ -52,6 +52,9 @@ pipeline {
                 }
             }
         }
+
+    }
+}
         /*
 
          stage('Docker Image') {
@@ -99,5 +102,3 @@ pipeline {
          }
 
  */
-    }
-}
