@@ -1,7 +1,7 @@
 pipeline {
     agent {
         node {
-            label 'My-Jenkins-Agent'
+            label 'MyDockerPC'
         }
     }
     //agent any
@@ -9,6 +9,16 @@ pipeline {
         maven 'Maven3'
         jdk 'Java21'
     }
+
+        environment {
+            APP_NAME = "devops-03-pipeline-aws"
+            RELEASE = "1.0"
+            DOCKER_USER = "erengk"
+            DOCKER_LOGIN = 'dockerhub'
+            IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
+            IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
+        }
+
     stages {
         stage('SCM GitHub') {
             steps {
@@ -52,6 +62,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Build & Push Docker Image to DockerHub') {
+             steps {
+                 script {
+
+                      docker.withRegistry('', DOCKER_LOGIN) {
+
+                              docker_image = docker.build "${IMAGE_NAME}"
+                              docker_image.push("${IMAGE_TAG}")
+                              docker_image.push("latest")
+                            }
+                        }
+                    }
+                }
 
     }
 }
