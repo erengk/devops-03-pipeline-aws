@@ -8,7 +8,7 @@
         <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.gokhaneren</groupId>
+    <groupId>com.erengk</groupId>
     <artifactId>devops-03-pipeline-aws</artifactId>
     <version>0.0.1</version>
     <name>devops-03-pipeline-aws</name>
