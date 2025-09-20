@@ -64,6 +64,16 @@ pipeline {
             }
         }
 
+            stage("Quality Gate"){
+                steps {
+                     script {
+                               waitForQualityGate abortPipeline: false, credentialsId: 'Jenkins-SonarQube'
+                            }
+                      }
+                }
+            }
+        }
+
         stage('Build & Push Docker Image to DockerHub') {
              steps {
                  script {
@@ -115,15 +125,7 @@ pipeline {
             }
         }
 
-            stage("Quality Gate"){
-                steps {
-                     script {
-                               waitForQualityGate abortPipeline: false, credentialsId: 'Jenkins-SonarQube'
-                            }
-                      }
-                }
-            }
-        }
+
 
 
         /*
