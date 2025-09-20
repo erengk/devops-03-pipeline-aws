@@ -84,6 +84,17 @@ pipeline {
                         }
                     }
                 }
+        stage("Trivy Scan") {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image erengk/devops-03-pipeline-aws:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                     } else {
+                        bat ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image erengk/devops-03-pipeline-aws:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                    }
+                }
+            }
+        }
     }
 }
         /*
