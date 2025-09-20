@@ -48,6 +48,7 @@ pipeline {
                 }
             }
         }
+
         stage("SonarQube Analysis") {
             steps {
                 script {
@@ -76,6 +77,7 @@ pipeline {
                         }
                     }
                 }
+
         stage("Trivy Scan") {
             steps {
                 script {
