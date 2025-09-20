@@ -51,7 +51,7 @@ pipeline {
         stage("SonarQube Analysis") {
             steps {
                 script {
-                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
+                    withSonarQubeEnv(credentialsId: 'Jenkins-SonarQube') {
                         if (isUnix()) {
                             // Linux or MacOS
                             sh "mvn sonar:sonar"
@@ -62,6 +62,14 @@ pipeline {
                 }
             }
         }
+
+        stage("Quality Gate"){
+             steps {
+                 script {
+                           waitForQualityGate abortPipeline: false, credentialsId: 'Jenkins-SonarQube'
+                        }
+                    }
+               }
 
         stage('Build & Push Docker Image to DockerHub') {
              steps {
