@@ -14,7 +14,7 @@ pipeline {
             APP_NAME = "devops-03-pipeline-aws"
             RELEASE = "1.0"
             DOCKER_USER = "erengk"
-            DOCKER_LOGIN = 'dockerhub'
+            DOCKER_LOGIN = 'docker_jenkins_token'
             IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
             IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
         }
@@ -90,15 +90,42 @@ pipeline {
             }
         }
 
-        stage("Quality Gate"){
-             steps {
-                 script {
-                           waitForQualityGate abortPipeline: false, credentialsId: 'Jenkins-SonarQube'
-                        }
+
+
+
+        stage('Cleanup Old Docker Images') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        // Bu repo için tüm image’leri al, tarihe göre sırala, son 3 hariç sil
+                        sh """
+                            docker images "${env.IMAGE_NAME}" --format "{{.Repository}}:{{.Tag}} {{.CreatedAt}}" \\
+                            | sort -r -k2 \\
+                            | tail -n +4 \\
+                            | awk '{print \$1}' \\
+                            | xargs -r docker rmi -f
+                        """
+
+                    } else {
+                        bat """
+                             for /f "skip=3 tokens=1" %%i in ('docker images ${env.IMAGE_NAME} --format "{{.Repository}}:{{.Tag}}" ^| sort') do docker rmi -f %%i
+                        """
                     }
-               }
-    }
-}
+                }
+            }
+        }
+
+            stage("Quality Gate"){
+                steps {
+                     script {
+                               waitForQualityGate abortPipeline: false, credentialsId: 'Jenkins-SonarQube'
+                            }
+                      }
+                }
+            }
+        }
+
+
         /*
 
          stage('Docker Image') {
