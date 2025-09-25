@@ -14,7 +14,7 @@ pipeline {
             APP_NAME = "devops-03-pipeline-aws"
             RELEASE = "1.0"
             DOCKER_USER = "erengk"
-            DOCKER_LOGIN = 'docker_jenkins_token'
+            DOCKER_LOGIN = 'id_dockerhub_rwd'
             IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
             IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
         }
