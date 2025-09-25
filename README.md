@@ -637,7 +637,7 @@ cd /opt
 sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.9.0.112764.zip
 ```
 
-== Ziplenmiş bir dosyayı ubuntuda açkmak için bu uygulamayı indirdim.
+== Ziplenmiş bir dosyayı ubuntuda açmak için bu uygulamayı indirdim.
 ```
 sudo apt install unzip
 

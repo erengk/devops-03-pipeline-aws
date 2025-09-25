@@ -71,8 +71,6 @@ pipeline {
                             }
                       }
                 }
-            }
-        }
 
         stage('Build & Push Docker Image to DockerHub') {
              steps {
@@ -100,9 +98,6 @@ pipeline {
             }
         }
 
-
-
-
         stage('Cleanup Old Docker Images') {
             steps {
                 script {
@@ -125,8 +120,8 @@ pipeline {
             }
         }
 
-
-
+    }
+}
 
         /*
 
