@@ -14,9 +14,9 @@ pipeline {
             APP_NAME = "devops-03-pipeline-aws"
             RELEASE = "1.0"
             DOCKER_USER = "erengk"
-            DOCKER_LOGIN = 'id_dockerhub_rwd'
-            IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
-            IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
+            DOCKER_LOGIN = "id_dockerhub_rwd"
+            IMAGE_NAME = ${DOCKER_USER} + "/" + ${APP_NAME}
+            IMAGE_TAG = ${RELEASE}.${BUILD_NUMBER}
         }
 
     stages {
@@ -129,6 +129,9 @@ pipeline {
              steps {
              //    sh 'docker build  -t erengk/devops-application:latest   .'
                  bat 'docker build  -t erengk/devops-application:latest   .'
+
+             //   erengk/devops-03-pipeline-aws:latest
+             //     ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG}
              }
          }
 
