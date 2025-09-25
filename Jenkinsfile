@@ -15,8 +15,8 @@ pipeline {
             RELEASE = "1.0"
             DOCKER_USER = "erengk"
             DOCKER_LOGIN = "id_dockerhub_rwd"
-            IMAGE_NAME = ${DOCKER_USER} + "/" + ${APP_NAME}
-            IMAGE_TAG = ${RELEASE}.${BUILD_NUMBER}
+            IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
+            IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
         }
 
     stages {
