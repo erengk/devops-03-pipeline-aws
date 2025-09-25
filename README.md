@@ -97,7 +97,38 @@ ya da
 ```
 sudo reboot
 ```
+```
+AWS üzerinde Ubuntu kurulu sunucunda Jenkins’i güvenli şekilde güncellemen için adım adım tek seferde sıralı komut listesi şu şekilde:
 
+# 1. Jenkins servisini durdur
+sudo systemctl stop jenkins
+
+# 2. Var olan Jenkins verilerini yedekle
+sudo cp -r /var/lib/jenkins /var/lib/jenkins_backup_$(date +%F)
+
+# 3. Jenkins resmi key ve repo ekle (eğer zaten ekliyse sorun çıkarmaz)
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+# 4. Paket listelerini güncelle
+sudo apt update
+
+# 5. Jenkins’i güncelle
+sudo apt install jenkins -y
+
+# 6. Servisi yeniden başlat
+sudo systemctl start jenkins
+
+# 7. Servis durumunu kontrol et
+sudo systemctl status jenkins
+
+# 8. Versiyon kontrolü
+apt show jenkins | grep Version
+```
 <hr>
 ===============================
 
