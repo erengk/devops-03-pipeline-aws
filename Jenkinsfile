@@ -17,6 +17,7 @@ pipeline {
             DOCKER_LOGIN = "id_dockerhub_rwd"
             IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
             IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
+            JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
         }
 
     stages {
@@ -116,6 +117,14 @@ pipeline {
                              for /f "skip=3 tokens=1" %%i in ('docker images ${env.IMAGE_NAME} --format "{{.Repository}}:{{.Tag}}" ^| sort') do docker rmi -f %%i
                         """
                     }
+                }
+            }
+        }
+
+        stage("Trigger CD Pipeline") {
+            steps {
+                script {
+                    sh "curl -v -k --user erengk:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-18-204-175-140.compute-1.amazonaws.com:8080/job/devops-03-pipeline-aws-gitops/buildWithParameters?token=GITOPS_TRIGGER_START'"
                 }
             }
         }
