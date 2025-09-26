@@ -100,26 +100,34 @@ pipeline {
         }
 
         stage('Cleanup Old Docker Images') {
-            steps {
-                script {
-                    if (isUnix()) {
-                        // Bu repo için tüm image’leri al, tarihe göre sırala, son 3 hariç sil
-                        sh """
-                            docker images "${env.IMAGE_NAME}" --format "{{.Repository}}:{{.Tag}} {{.CreatedAt}}" \\
-                            | sort -r -k2 \\
-                            | tail -n +4 \\
-                            | awk '{print \$1}' \\
-                            | xargs -r docker rmi -f
-                        """
+          steps {
+            script {
+              if (isUnix()) {
+                sh """
+                  set -e
 
-                    } else {
-                        bat """
-                             for /f "skip=3 tokens=1" %%i in ('docker images ${env.IMAGE_NAME} --format "{{.Repository}}:{{.Tag}}" ^| sort') do docker rmi -f %%i
-                        """
-                    }
-                }
+                  # 1) <none> (dangling) imajları temizle
+                  docker image prune -f
+
+                  # 2) Bu repo için en yeni 3 imajı KORU, kalanları sil (liste zaten oluşturulma tarihine göre sıralıdır)
+                  docker images "${env.IMAGE_NAME}" --format '{{.ID}} {{.Repository}}:{{.Tag}}' \
+                    | awk 'NR>3 {print \$1}' \
+                    | sort -u \
+                    | xargs -r docker rmi -f
+                """
+              } else {
+                bat """
+                  REM 1) <none> (dangling) imajları temizle
+                  docker image prune -f
+
+                  REM 2) Bu repo için en yeni 3 imajı KORU, kalanları sil
+                  for /f "skip=3 tokens=1" %%i in ('docker images ${env.IMAGE_NAME} --format "{{.ID}}"') do docker rmi -f %%i
+                """
+              }
             }
+          }
         }
+
 
         stage("Trigger CD Pipeline") {
             steps {
